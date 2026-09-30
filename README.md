@@ -1,8 +1,10 @@
 # Air-writing digit recognition
 
+https://github.com/user-attachments/assets/d82c5ac9-9e06-4d22-91cd-d6b6587e0e07
+
 Inspired by the disney wand id's :)
 
-Uses a bare-metal nueral network running on an ESP32-S3 to recognize digits drawn in the air while holding an imu.
+Uses a bare-metal neural network running on an ESP32-S3 to recognize digits drawn in the air while holding an imu.
 
 **Stack:** UM TinyS3 (ESP32-S3) + LSM9DS1 accel/gyro over I2C. Firmware in Arduino C++.
 Training in Python/numpy. Model is a 240-64-32-10 MLP exported as C arrays into `model.h`.
@@ -29,7 +31,7 @@ Arduino IDE, board: UM TinyS3.
 ## Files
 
 - `tinys3_adxl335.ino` sampling, gesture capture, feature extraction, on-device MLP
-- `model.h` weights (placeholder `MODEL_READY 0` until trained)
+- `model.h` trained weights as C arrays (`MODEL_READY 1`; set to `0` to build without a model)
 - `collect.py` label and save gestures to `data/gestures.csv`
 - `train.py` train and export
 - `demo.py` live window
@@ -43,7 +45,7 @@ Output: `R` ready, `S` recording started, `F,<240 floats>` features, `P,<class>,
 
 ## How it works
 
-Sensor at 119 Hz. Gesture is trimmed to the moving part (gyro > 40 deg/s), resampled to 40 points x 6 axes, mean-removed, max-abs scaled per sensor. Manual mode records between `b` and `e` (max 3 s). Auto mode triggers on motion above 80 deg/s and stops after 300 ms still.
+Sensor at 119 Hz. Gesture is trimmed to the moving part (gyro > 40 deg/s), resampled to 40 points x 6 axes, mean-removed, max-abs scaled per sensor. Manual mode records between `b` and `e` (max 1 s). Auto mode triggers on motion above 80 deg/s and stops after 300 ms still.
 
 ## Tuning
 
